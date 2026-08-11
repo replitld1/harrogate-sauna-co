@@ -117,7 +117,7 @@ export default function Collection() {
 
               <div className="relative">
                 {/* The plate answers "what is it"; the plan answers "how big".
-                    Both, in that order — nobody commits £32,000 to a wireframe. */}
+                    Both, in that order — nobody commits £29,000 to a wireframe. */}
                 <div className="relative -mx-8 -mt-8 mb-8 aspect-[4/3] overflow-hidden lg:-mx-10 lg:-mt-10">
                   <img
                     src={m.image}

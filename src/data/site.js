@@ -18,7 +18,7 @@ export const brand = {
   phone: '+44 (0)1423 647482',
   email: 'workshop@harrogatesauna.co',
   address: ['Manor Farm', 'Crag Lane', 'Harrogate', 'HG3 2BD'],
-  from: '£24,500',
+  from: '£20,000',
 }
 
 // The scarcity numbers are quoted in several places — keep them here so they
@@ -53,9 +53,9 @@ export const panels = {
     eyebrow: 'Löyly',
     title: 'Water meets',
     emphasis: 'stone.',
-    body: 'A hundred and eighty kilos of Finnish olivine diabase, held at temperature for hours. Mass this large gives steam that rolls across the room and settles, instead of the thin scald you get off a light heater.',
+    body: 'A HUUM HIVE carries two hundred and fifty kilos of olivine diabase, held at temperature for hours. Mass like that gives steam that rolls across the room and settles, instead of the thin scald you get off a light heater.',
     facts: [
-      { label: 'Stone mass', value: '180kg' },
+      { label: 'Stone mass', value: '250kg' },
       { label: 'Hold', value: '4 hours' },
     ],
   },
@@ -93,8 +93,9 @@ export const marqueeItems = [
   'Western red cedar, coastal British Columbia',
   'Kiln dried to 12% moisture',
   'Joiners with 30–40 years on the tools',
-  'Iki Pillar 9kW',
+  'HUUM DROP, CLIFF & HIVE',
   'Geofenced pre-heat',
+  'LED-lit, no bulbs in the heat',
   'In-house technology team',
   'Hand-cut mortise & tenon',
   'Harrogate workshop',
@@ -126,9 +127,9 @@ export const hotspots = [
     short: 'Heater',
     x: 339,
     y: 392,
-    title: 'Iki Pillar, 9kW',
-    body: 'A column of 180kg Finnish olivine diabase. Mass this large gives a soft, round löyly — steam that rolls rather than bites when water meets stone.',
-    spec: '180kg stone',
+    title: 'HUUM, and only HUUM',
+    body: 'A DROP in the smaller cabins, a CLIFF or a HIVE in the larger ones. HUUM size every heater to a room volume rather than a floor area, which is the same way we size a cabin — so the cabin and the heater are specified off one number instead of two guesses.',
+    spec: 'DROP · CLIFF · HIVE',
   },
   {
     id: 'benches',
@@ -165,22 +166,22 @@ export const models = [
     name: 'Stray',
     seats: 'Two to three',
     footprint: '2.1 × 1.9 m',
-    price: '£24,500',
+    price: '£20,000',
     image: asset('frames/stray-exterior.webp'),
     alt: 'The Stray at dusk — a cedar cube with one lit glazed wall, standing in wet grass.',
     note: 'The original. A cube of cedar with one glazed wall, sized for a courtyard or the end of a town garden.',
-    features: ['9kW Iki Pillar', 'Single glazed wall', 'Two bench tiers'],
+    features: ['HUUM DROP 6', 'Single glazed wall', 'Two bench tiers'],
   },
   {
     id: 'nidd',
     name: 'Nidd',
     seats: 'Four to five',
     footprint: '3.0 × 2.2 m',
-    price: '£32,000',
+    price: '£29,000',
     image: asset('frames/nidd-interior.webp'),
     alt: 'Inside a Harrogate Sauna Co cabin — aspen lining, cantilevered abachi benches, low warm light.',
     note: 'A longer cabin with a covered threshold — somewhere to stand, cool, and go back in. Our most requested build.',
-    features: ['12kW Iki Pillar', 'Covered threshold', 'Corner glazing'],
+    features: ['HUUM CLIFF 11', 'Covered threshold', 'Corner glazing'],
     featured: true,
   },
   {
@@ -188,11 +189,11 @@ export const models = [
     name: 'Fountains',
     seats: 'Six to eight',
     footprint: '4.2 × 2.4 m',
-    price: '£46,000',
+    price: '£37,000',
     image: asset('frames/fountains-exterior.webp'),
     alt: 'The Fountains at night, lit from within, seen across the garden.',
-    note: 'Bath house proportions. A wood-fired stove with an external feed, a cold plunge bay, and a bench that runs the full length.',
-    features: ['Wood-fired stove', 'Plunge bay', 'Full-length bench'],
+    note: 'Bath house proportions. A HIVE holding a quarter of a tonne of stone, a cold plunge bay, and a bench that runs the full length.',
+    features: ['HUUM HIVE 15', 'Plunge bay', 'Full-length bench'],
   },
 ]
 
@@ -207,8 +208,8 @@ export const dimensions = {
     { label: 'Door opening', values: ['700 × 1900 mm', '700 × 1900 mm', '800 × 1900 mm'] },
     { label: 'Dry weight', values: ['640 kg', '810 kg', '980 kg'] },
     { label: 'Access width needed', values: ['2.40 m', '2.60 m', '2.80 m'] },
-    { label: 'Heater', values: ['Iki Pillar 9kW', 'Iki Pillar 12kW', 'Wood-fired, external feed'] },
-    { label: 'Electrical supply', values: ['40A dedicated', '50A dedicated', '16A — lights & controls'] },
+    { label: 'Heater', values: ['HUUM DROP 6', 'HUUM CLIFF 11', 'HUUM HIVE 15'] },
+    { label: 'Electrical supply', values: ['32A single phase', '16A three phase', '25A three phase'] },
     { label: 'Seats', values: ['2–3', '4–5', '6–8'] },
   ],
 }
@@ -232,7 +233,7 @@ export const siting = [
   {
     n: '01',
     title: 'The electrical supply',
-    body: 'A sauna heater is one of the heaviest loads in a domestic garden. You arrange a qualified electrician to run a dedicated higher-amp supply — 40A for the Stray, 50A for the Nidd — on its own RCBO from the consumer unit. The Fountains is wood-fired and needs only a 16A run for lighting and controls. We send the full specification after the consultation so your electrician can price it early.',
+    body: 'You arrange a qualified electrician. The Stray runs on a dedicated 32A single-phase supply on its own RCBO. The Nidd and the Fountains use HUUM CLIFF and HIVE units, which are three-phase — so if the house is single-phase only, that is a conversation to have with your DNO early rather than late. We send the full HUUM schedule after the consultation so your electrician can price it.',
     meta: 'Your electrician',
   },
   {
@@ -352,14 +353,14 @@ export const specification = [
   { group: 'Interior', rows: [
     ['Lining', 'Thermally treated aspen, 15mm'],
     ['Benches', 'Abachi, cantilevered, two tiers'],
-    ['Lighting', 'Concealed 2200K LED, dimmable'],
+    ['Lighting', 'Concealed 2200K LED strip, dimmable — no bulbs, no heat'],
     ['Door', '8mm low-iron toughened glass, cedar frame'],
   ]},
   { group: 'Heat & power', rows: [
-    ['Heater', 'Stray 9kW · Nidd 12kW Iki Pillar · Fountains wood-fired'],
-    ['Stone', '180kg Finnish olivine diabase'],
+    ['Heater', 'HUUM — DROP 6 (Stray) · CLIFF 11 (Nidd) · HIVE 15 (Fountains)'],
+    ['Stone', 'HUUM olivine diabase — 55kg (DROP) to 250kg (HIVE)'],
     ['Time to 90°C', '35 minutes from cold'],
-    ['Supply', '40A (Stray) · 50A (Nidd) · 16A (Fountains), 230V single phase'],
+    ['Supply', '32A 230V single phase (Stray) · 16A/25A 400V three phase (Nidd, Fountains)'],
   ]},
   { group: 'Technology', rows: [
     ['Control', 'HSC controller, iOS & Android app'],
@@ -376,12 +377,14 @@ export const specification = [
   ]},
 ]
 
-// Heater sizing.
+// Heater sizing — HUUM's own published ratings, not a curve of ours.
 //
-// Output does not scale linearly with volume — a small room needs proportionally
-// more per cubic metre than a large one — so the curve is 1.6 × m³^0.78, which
-// lands the three cabins on the three heaters we actually fit. Target
-// temperature then trims it by ~1.2% per degree off 90°C.
+// Every HUUM heater is rated for a room-volume band. We pick the smallest unit
+// whose band still covers the cabin once the target temperature is accounted
+// for: running hotter than 90C effectively makes the room bigger to the heater,
+// so volume is scaled ~1.2% per degree before the lookup.
+//
+// Figures from huum.eu product pages (DROP / CLIFF / HIVE), August 2026.
 export const cabinVolumes = [
   { id: 'stray', name: 'Stray', m3: 8.2, dims: '2.10 × 1.90 × 2.05 m' },
   { id: 'nidd', name: 'Nidd', m3: 13.5, dims: '3.00 × 2.20 × 2.05 m' },
@@ -390,52 +393,61 @@ export const cabinVolumes = [
 
 export const heaters = [
   {
-    id: 'iki9',
-    name: 'Iki Pillar 9kW',
-    maxKw: 10,
-    supply: '40A dedicated',
-    stone: '180kg',
-    note: 'The standard fit. A column of olivine diabase that holds the room for four hours after it cuts out.',
+    id: 'drop6', name: 'HUUM DROP 6', kw: 6, min: 5, max: 9, stones: '55 kg',
+    supply: '32A single phase',
+    note: 'A steel basket of stone in a cedar cradle, and what we fit in the Stray. The largest HUUM that still runs off an ordinary single-phase supply at 32A.',
   },
   {
-    id: 'iki12',
-    name: 'Iki Pillar 12kW',
-    maxKw: 13.8,
-    supply: '50A dedicated',
-    stone: '180kg',
-    note: 'Same column, more element. Fitted where the room is longer or you want the top rung quickly.',
+    id: 'drop9', name: 'HUUM DROP 9', kw: 8.5, min: 8, max: 13, stones: '55 kg',
+    supply: '40A single phase',
+    note: 'The same drop-shaped basket with more element behind it. Worth it if you want the top rung fast, or if the cabin has a lot of glass.',
   },
   {
-    id: 'wood',
-    name: 'Wood-fired, external feed',
-    maxKw: Infinity,
-    supply: '16A — lights & controls only',
-    stone: '220kg',
-    note: 'Past about fourteen kilowatts an electric supply stops being sensible. Fed from outside, so nobody carries logs through the room.',
+    id: 'cliff11', name: 'HUUM CLIFF 11', kw: 10.5, min: 10, max: 16, stones: '75 kg',
+    supply: '16A three phase',
+    note: 'A taller column holding seventy-five kilos. Three-phase only — worth knowing before your electrician quotes.',
+  },
+  {
+    id: 'hive12', name: 'HUUM HIVE 12', kw: 12, min: 12, max: 18, stones: '250 kg',
+    supply: '20A three phase',
+    note: 'The HIVE buries a quarter of a tonne of stone under the bench. Steam that rolls instead of bites, and it holds long after it cuts out.',
+  },
+  {
+    id: 'hive15', name: 'HUUM HIVE 15', kw: 15, min: 15, max: 23, stones: '250 kg',
+    supply: '25A three phase',
+    note: 'What we fit in the Fountains. Same 250kg of stone, enough element to bring a bath-house-sized room up in one go.',
+  },
+  {
+    id: 'hive18', name: 'HUUM HIVE 18', kw: 18, min: 18, max: 28, stones: '250 kg',
+    supply: '32A three phase',
+    note: 'The largest we will fit. Past this you are into commercial territory and a different conversation.',
   },
 ]
 
 export const thermostat = {
-  title: 'Which heater',
+  title: 'Which HUUM',
   emphasis: 'you actually need.',
-  body: 'Spin the dial to the temperature you want to sit at, and pick the cabin you are considering. This is the same arithmetic we do on the phone — output against volume, trimmed for how hot you want to run it.',
+  body: 'We fit HUUM and nothing else. Spin the dial to the temperature you want to sit at, pick the cabin, and this reads straight off HUUM\u2019s own volume ratings — the same lookup we do on the phone.',
   min: 60,
   max: 110,
   start: 90,
-  note: 'Rounded to the heaters we fit. If your cabin is bespoke we run the same calculation on its real volume before quoting.',
+  note: 'HUUM rate every heater for a room-volume band. Running hotter than 90°C makes the room effectively bigger, which is why the answer moves as you turn the dial.',
 }
 
-// kW needed for a given volume at a given target.
-export const requiredKw = (m3, target) =>
-  +(1.6 * m3 ** 0.78 * (1 + (target - 90) * 0.012)).toFixed(1)
+// Target temperature makes the room effectively larger or smaller to the heater.
+export const effectiveVolume = (m3, target) => +(m3 * (1 + (target - 90) * 0.012)).toFixed(1)
 
-export const heaterFor = (kw) => heaters.find((h) => kw <= h.maxKw) ?? heaters[heaters.length - 1]
+// Smallest HUUM whose published band still covers the room.
+export const heaterFor = (m3, target) => {
+  const v = effectiveVolume(m3, target)
+  return heaters.find((h) => v <= h.max) ?? heaters[heaters.length - 1]
+}
 
-// Roughly 35 minutes to 90°C on a correctly matched heater; headroom speeds it up.
-export const timeToTemp = (m3, target, heaterKw) => {
-  const need = requiredKw(m3, target)
-  const ratio = Math.min(1.6, Math.max(0.6, (heaterKw || need) / need))
-  return Math.round((35 * (target - 15)) / 75 / ratio)
+// HUUM quote roughly 30–40 minutes to temperature on a correctly matched unit.
+export const timeToTemp = (m3, target, heater) => {
+  const v = effectiveVolume(m3, target)
+  const headroom = Math.min(1.5, Math.max(0.7, heater.max / v))
+  return Math.round(((35 * (target - 15)) / 75 / headroom) * 1.05)
 }
 
 export const ladder = [
@@ -474,11 +486,19 @@ export const faqs = [
   },
   {
     q: 'What do I need to sort before delivery?',
-    a: 'Two things, and both want starting early. A qualified electrician to run a dedicated supply — 40A for the Stray, 50A for the Nidd, and just 16A for the wood-fired Fountains — and a base, either plastic grid mats filled with stone or a concrete sub-base. We send the full specification for both after the consultation. What we will not do is set a cabin straight onto grass.',
+    a: 'Two things, and both want starting early. Electrics: the Stray takes a dedicated 32A single-phase supply, while the Nidd and Fountains use three-phase HUUM units (16A and 25A at 400V). If your house is single-phase only, tell us at the consultation — it changes which cabin makes sense. And a base, either plastic grid mats filled with stone or a concrete sub-base. What we will not do is set a cabin straight onto grass.',
   },
   {
     q: 'Do you come out to look at the garden?',
     a: 'We do the first consultation over FaceTime instead. You walk us round on the phone and we read the light, the access and the fall of the ground with you. It takes twenty minutes rather than half a day, you get an answer the same week, and nobody has to be sold to on their own drive. We are on site at delivery, which is when it actually matters.',
+  },
+  {
+    q: 'Why HUUM and nothing else?',
+    a: 'Because they rate a heater by room volume, not by floor area, and they publish the bands. That means we can specify the cabin and the heater off one number and show you the arithmetic — which is what the dial above is doing. They also make the only heaters we have found that look like they belong in a cedar room rather than bolted to it: the DROP sits in a cedar cradle, the HIVE disappears under the bench with a quarter of a tonne of stone on it. We have no trade tie to them. We just have not found better.',
+  },
+  {
+    q: 'How is it lit?',
+    a: 'A concealed 2200K LED strip, dimmed from the same app as the heat. No bulbs and no fittings inside the hot zone — nothing to replace at 100°C, nothing casting a hard shadow, and the light comes from behind the bench line so it washes the cedar rather than pointing at you. At the bottom of the dimmer it is about the level of a candle.',
   },
   {
     q: 'What does the geofencing actually do?',

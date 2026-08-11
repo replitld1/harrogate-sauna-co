@@ -103,18 +103,48 @@ export default function Cinematic({
 
   const resolved = isInlined ? objectUrl : src
   const playVideo = allowVideo && near && !reduced
+  const [blocked, setBlocked] = useState(false)
 
+  /* Getting autoplay to actually happen on a phone.
+   *
+   * Three things bite here, and all three had to be fixed:
+   *  1. React sets `muted` as a DOM *property*, and Safari reads the
+   *     *attribute* when deciding whether a video may autoplay. Without the
+   *     attribute iOS refuses every time and you are left staring at a poster.
+   *  2. play() can reject before the first frame is ready, so it is retried on
+   *     canplay/loadeddata rather than fired once and forgotten.
+   *  3. Low Power Mode blocks autoplay outright, whatever we do. That is not
+   *     recoverable, so we surface a tap-to-play control instead of failing
+   *     silently. */
   useEffect(() => {
     const v = ref.current
     if (!v || !resolved || !playVideo) return
-    // Autoplay can still be refused; the poster carries it either way.
-    v.play().catch(() => {})
+
+    v.muted = true
+    v.defaultMuted = true
+    v.setAttribute('muted', '')
+    v.setAttribute('playsinline', '')
+
+    let cancelled = false
+    const attempt = () => {
+      if (cancelled) return
+      const p = v.play()
+      if (p?.then) p.then(() => !cancelled && setBlocked(false)).catch(() => !cancelled && setBlocked(true))
+    }
+
+    attempt()
+    v.addEventListener('loadeddata', attempt)
+    v.addEventListener('canplay', attempt)
+    return () => {
+      cancelled = true
+      v.removeEventListener('loadeddata', attempt)
+      v.removeEventListener('canplay', attempt)
+    }
   }, [playVideo, resolved])
 
   return (
     <div
       ref={holderRef}
-      aria-hidden="true"
       className={`pointer-events-none absolute inset-0 overflow-hidden bg-ink ${className}`}
     >
       {/* The still is always present. It is the whole picture on a phone, the
@@ -141,6 +171,7 @@ export default function Cinematic({
       {playVideo && (
         <video
           ref={ref}
+          aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
           style={{
             opacity,
@@ -150,14 +181,37 @@ export default function Cinematic({
           poster={poster}
           autoPlay
           muted
+          defaultMuted
           loop
           playsInline
-          preload="metadata"
+          disableRemotePlayback
+          preload="auto"
           tabIndex={-1}
         />
       )}
 
       <div className={`absolute inset-0 ${scrims[scrim]}`} />
+
+      {/* Low Power Mode refuses autoplay no matter what. Rather than leave a
+          still that looks broken, offer the tap. */}
+      {blocked && (
+        <button
+          type="button"
+          onClick={() => {
+            const v = ref.current
+            if (!v) return
+            v.muted = true
+            v.play().then(() => setBlocked(false)).catch(() => {})
+          }}
+          className="pointer-events-auto absolute bottom-5 right-5 z-10 flex min-h-[44px] items-center gap-2.5 rounded-full border border-bone/25 bg-ink/70 px-5 text-[13px] text-bone backdrop-blur-md"
+        >
+          <span
+            aria-hidden="true"
+            className="block h-0 w-0 border-y-[6px] border-l-[9px] border-y-transparent border-l-bone"
+          />
+          Play
+        </button>
+      )}
     </div>
   )
 }

@@ -2,9 +2,9 @@ import { useCallback, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   cabinVolumes,
+  effectiveVolume,
   heaterFor,
   ladder,
-  requiredKw,
   thermostat,
   timeToTemp,
 } from '../data/site'
@@ -36,9 +36,9 @@ export default function Ritual() {
   const svgRef = useRef(null)
 
   const t = (temp - min) / (max - min)
-  const kw = requiredKw(cabin.m3, temp)
-  const heater = heaterFor(kw)
-  const mins = timeToTemp(cabin.m3, temp, Number.isFinite(heater.maxKw) ? heater.maxKw : kw)
+  const heater = heaterFor(cabin.m3, temp)
+  const effV = effectiveVolume(cabin.m3, temp)
+  const mins = timeToTemp(cabin.m3, temp, heater)
 
   // Pointer anywhere on the face maps to the angle under it.
   const setFromPointer = useCallback(
@@ -129,11 +129,14 @@ export default function Ritual() {
               <p className="mt-3 max-w-[42ch] text-[14px] leading-relaxed text-sand/70">
                 {heater.note}
               </p>
-              <dl className="mt-6 grid grid-cols-3 gap-4">
+              <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
                 {[
-                  ['Needs', `${kw} kW`],
+                  ['Output', `${heater.kw} kW`],
+                  ['Rated for', `${heater.min}–${heater.max} m³`],
                   ['To temp', `${mins} min`],
+                  ['Stones', heater.stones],
                   ['Supply', heater.supply],
+                  ['At this temp', `${effV} m³ effective`],
                 ].map(([k, v]) => (
                   <div key={k}>
                     <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-stone">
@@ -257,7 +260,7 @@ export default function Ritual() {
                   Celsius
                 </span>
                 <span className="mt-4 max-w-[10rem] text-center text-[12.5px] leading-tight text-glow">
-                  {Number.isFinite(heater.maxKw) ? heater.name : 'Wood-fired'}
+                  {heater.name.replace('HUUM ', '')}
                 </span>
               </div>
             </div>
