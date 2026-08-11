@@ -41,7 +41,7 @@ const asset = (path) => `${import.meta.env.BASE_URL}${path}`.replace(/([^:])\/{2
 export const film = {
   hero: { src: asset('videos/hero-dusk.mp4'), poster: asset('frames/hero-poster.webp'), scrim: 'left', opacity: 0.72 },
   loyly: { src: asset('videos/loyly-stones.mp4'), poster: asset('frames/loyly-poster.webp'), scrim: 'base', opacity: 0.74 },
-  interior: { src: asset('videos/cabin-interior.mp4'), poster: asset('frames/interior-poster.webp'), scrim: 'base', opacity: 0.7 },
+  interior: { src: asset('videos/cabin-interior.mp4'), poster: asset('frames/huum-room.webp'), scrim: 'base', opacity: 0.78, still: true },
   workshop: { src: asset('videos/workshop-cedar.mp4'), poster: asset('frames/craft-poster.webp'), scrim: 'full', opacity: 0.34 },
   night: { src: asset('videos/night-orbit.mp4'), poster: asset('frames/night-poster.webp'), scrim: 'full', opacity: 0.4 },
 }
@@ -63,12 +63,12 @@ export const panels = {
     id: 'interior',
     film: film.interior,
     eyebrow: 'The room',
-    title: 'Nothing in here',
-    emphasis: 'is fixed to the floor.',
-    body: 'Both bench tiers cantilever off a hidden steel spine, so the floor runs unbroken from wall to wall. It sweeps out in a minute and there is no joint anywhere for water to sit in.',
+    title: 'Built around',
+    emphasis: 'the heater.',
+    body: 'The HUUM sits in a cedar cradle on the wall, not bolted to the floor, so the boards run unbroken underneath and there is no joint for water to sit in. The light is a concealed LED above the bench line — nothing in the hot zone to replace, and no bulb pointing at you.',
     facts: [
-      { label: 'Bench', value: 'Abachi' },
-      { label: 'Lining', value: 'Aspen' },
+      { label: 'Heater', value: 'HUUM DROP' },
+      { label: 'Light', value: '2200K LED' },
     ],
   },
 }
@@ -178,8 +178,8 @@ export const models = [
     seats: 'Four to five',
     footprint: '3.0 × 2.2 m',
     price: '£29,000',
-    image: asset('frames/nidd-interior.webp'),
-    alt: 'Inside a Harrogate Sauna Co cabin — aspen lining, cantilevered abachi benches, low warm light.',
+    image: asset('frames/huum-heater.webp'),
+    alt: 'A HUUM DROP heater in its cedar cradle inside a Nidd, with the bucket and ladle on the bench beside it.',
     note: 'A longer cabin with a covered threshold — somewhere to stand, cool, and go back in. Our most requested build.',
     features: ['HUUM CLIFF 11', 'Covered threshold', 'Corner glazing'],
     featured: true,

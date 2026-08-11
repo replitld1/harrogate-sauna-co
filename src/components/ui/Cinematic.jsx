@@ -46,6 +46,9 @@ export default function Cinematic({
   drift = true,
   opacity = 0.68,
   eager = false,
+  // Some panels are carried by a real photograph. Playing a generated clip
+  // over one of those would be a downgrade, so they opt out of video.
+  still = false,
   className = '',
 }) {
   const ref = useRef(null)
@@ -61,19 +64,57 @@ export default function Cinematic({
     setAllowVideo(wantsVideo())
   }, [])
 
+  /* Nearness is decided two ways on purpose.
+   *
+   * IntersectionObserver is the efficient path, but it delivers nothing while
+   * the document is hidden, and a panel that never gets its callback never
+   * mounts its video at all — the failure mode is a page of stills. So a
+   * cheap rAF-throttled scroll check runs alongside it and reaches the same
+   * conclusion independently. Whichever wins first, the video mounts. */
   useEffect(() => {
-    if (near || !holderRef.current) return
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setNear(true)
-          obs.disconnect()
-        }
-      },
-      { rootMargin: '300px 0px' },
-    )
-    obs.observe(holderRef.current)
-    return () => obs.disconnect()
+    if (near) return
+    const el = holderRef.current
+    if (!el) return
+
+    let done = false
+    const promote = () => {
+      if (done) return
+      done = true
+      setNear(true)
+    }
+
+    const check = () => {
+      const r = el.getBoundingClientRect()
+      if (r.top < window.innerHeight + 300 && r.bottom > -300) promote()
+    }
+
+    // Deliberately not rAF-throttled: rAF is suspended whenever the document
+    // is hidden, which is exactly one of the cases this fallback exists to
+    // cover. A getBoundingClientRect behind a 100ms time guard is cheap enough.
+    let last = 0
+    const onScroll = () => {
+      const now = performance.now()
+      if (now - last < 100) return
+      last = now
+      check()
+    }
+
+    const obs = new IntersectionObserver(([e]) => e.isIntersecting && promote(), {
+      rootMargin: '300px 0px',
+    })
+    obs.observe(el)
+
+    check()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    document.addEventListener('visibilitychange', check)
+
+    return () => {
+      obs.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      document.removeEventListener('visibilitychange', check)
+    }
   }, [near])
 
   // iOS Safari will not play a `data:` URI in a <video> — it needs a source it
@@ -102,7 +143,7 @@ export default function Cinematic({
   }, [src, isInlined])
 
   const resolved = isInlined ? objectUrl : src
-  const playVideo = allowVideo && near && !reduced
+  const playVideo = allowVideo && near && !reduced && !still
   const [blocked, setBlocked] = useState(false)
 
   /* Getting autoplay to actually happen on a phone.

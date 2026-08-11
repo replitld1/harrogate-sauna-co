@@ -14,7 +14,8 @@ export default function FilmPanel({ id, film, eyebrow, title, emphasis, body, fa
       className="relative flex min-h-[92svh] scroll-mt-20 flex-col justify-end overflow-hidden pb-16 lg:pb-24"
     >
       <Cinematic src={film.src}
-        poster={film.poster} scrim={film.scrim ?? 'base'} opacity={film.opacity ?? 0.68} />
+        poster={film.poster}
+        still={film.still} scrim={film.scrim ?? 'base'} opacity={film.opacity ?? 0.68} />
 
       <div className="relative mx-auto w-full max-w-[1400px] px-6 lg:px-12">
         <motion.div
