@@ -22,20 +22,21 @@ const scrims = {
  * dead under prefers-reduced-motion — the video pauses on its first frame.
  */
 /**
- * Should this visitor get 1.5MB of video at all?
+ * Should this visitor get 1.5MB of video?
  *
- * Phones were fetching all five clips (7.5MB) eagerly, on a page where the
- * poster frame carries the same picture for a fraction of the bytes. Video is
- * an enhancement for wide screens on a connection that has not asked us to go
- * easy; everyone else gets the still, which is what autoplay-refused browsers
- * were seeing anyway.
+ * Phones play the film too — the footage is the point of the page. What we do
+ * not do is what this used to: fetch all five clips (7.5MB) eagerly on load.
+ * Each one now mounts only as it comes near the viewport, behind its poster,
+ * so a phone pays for the clip it is actually looking at.
+ *
+ * The two opt-outs are the visitor's own: Data Saver, and a 2G connection.
  */
 const wantsVideo = () => {
   if (typeof window === 'undefined') return false
   const c = navigator.connection
   if (c?.saveData) return false
   if (c?.effectiveType && /(^|-)2g$/.test(c.effectiveType)) return false
-  return window.matchMedia('(min-width: 768px)').matches
+  return true
 }
 
 export default function Cinematic({
@@ -58,10 +59,6 @@ export default function Cinematic({
 
   useEffect(() => {
     setAllowVideo(wantsVideo())
-    const mq = window.matchMedia('(min-width: 768px)')
-    const onChange = () => setAllowVideo(wantsVideo())
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
   }, [])
 
   useEffect(() => {

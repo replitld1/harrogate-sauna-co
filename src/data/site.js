@@ -376,6 +376,68 @@ export const specification = [
   ]},
 ]
 
+// Heater sizing.
+//
+// Output does not scale linearly with volume — a small room needs proportionally
+// more per cubic metre than a large one — so the curve is 1.6 × m³^0.78, which
+// lands the three cabins on the three heaters we actually fit. Target
+// temperature then trims it by ~1.2% per degree off 90°C.
+export const cabinVolumes = [
+  { id: 'stray', name: 'Stray', m3: 8.2, dims: '2.10 × 1.90 × 2.05 m' },
+  { id: 'nidd', name: 'Nidd', m3: 13.5, dims: '3.00 × 2.20 × 2.05 m' },
+  { id: 'fountains', name: 'Fountains', m3: 21.7, dims: '4.20 × 2.40 × 2.15 m' },
+]
+
+export const heaters = [
+  {
+    id: 'iki9',
+    name: 'Iki Pillar 9kW',
+    maxKw: 10,
+    supply: '40A dedicated',
+    stone: '180kg',
+    note: 'The standard fit. A column of olivine diabase that holds the room for four hours after it cuts out.',
+  },
+  {
+    id: 'iki12',
+    name: 'Iki Pillar 12kW',
+    maxKw: 13.8,
+    supply: '50A dedicated',
+    stone: '180kg',
+    note: 'Same column, more element. Fitted where the room is longer or you want the top rung quickly.',
+  },
+  {
+    id: 'wood',
+    name: 'Wood-fired, external feed',
+    maxKw: Infinity,
+    supply: '16A — lights & controls only',
+    stone: '220kg',
+    note: 'Past about fourteen kilowatts an electric supply stops being sensible. Fed from outside, so nobody carries logs through the room.',
+  },
+]
+
+export const thermostat = {
+  title: 'Which heater',
+  emphasis: 'you actually need.',
+  body: 'Spin the dial to the temperature you want to sit at, and pick the cabin you are considering. This is the same arithmetic we do on the phone — output against volume, trimmed for how hot you want to run it.',
+  min: 60,
+  max: 110,
+  start: 90,
+  note: 'Rounded to the heaters we fit. If your cabin is bespoke we run the same calculation on its real volume before quoting.',
+}
+
+// kW needed for a given volume at a given target.
+export const requiredKw = (m3, target) =>
+  +(1.6 * m3 ** 0.78 * (1 + (target - 90) * 0.012)).toFixed(1)
+
+export const heaterFor = (kw) => heaters.find((h) => kw <= h.maxKw) ?? heaters[heaters.length - 1]
+
+// Roughly 35 minutes to 90°C on a correctly matched heater; headroom speeds it up.
+export const timeToTemp = (m3, target, heaterKw) => {
+  const need = requiredKw(m3, target)
+  const ratio = Math.min(1.6, Math.max(0.6, (heaterKw || need) / need))
+  return Math.round((35 * (target - 15)) / 75 / ratio)
+}
+
 export const ladder = [
   {
     temp: '60°',

@@ -14,26 +14,54 @@ import Reveal from './ui/Reveal'
  * can never disagree with each other.
  * ------------------------------------------------------------------ */
 
-const HOME = { x: 640, y: 296 }
-const FENCE_R = 186
-const P0 = { x: 62, y: 132 }
-const P1 = { x: 330, y: 100 }
-const P2 = HOME
+/* Two compositions of the same journey.
+ *
+ * Landscape squeezed into a phone column rendered 900x460 at 325px wide — the
+ * lettering came out around 4px and the whole thing read as a smudge. Portrait
+ * is a genuine re-layout, not a scale: the commute runs down the screen, the
+ * readout sits above it, and every type size is set against the smaller
+ * viewBox so it lands at a real reading size.
+ */
+const LAYOUTS = {
+  landscape: {
+    vb: '0 0 900 460',
+    home: { x: 640, y: 296 },
+    r: 186,
+    p0: { x: 62, y: 132 },
+    p1: { x: 330, y: 100 },
+    grid: { cols: 17, rows: 9, gap: 53, gapY: 52 },
+    font: { label: 12, small: 11, big: 30, tick: 12 },
+    readout: { x: 700, y: 40, w: 168, h: 74 },
+    cabin: 26,
+  },
+  portrait: {
+    vb: '0 0 420 620',
+    home: { x: 232, y: 430 },
+    r: 150,
+    p0: { x: 58, y: 96 },
+    p1: { x: 92, y: 268 },
+    grid: { cols: 9, rows: 13, gap: 48, gapY: 48 },
+    font: { label: 15, small: 13, big: 36, tick: 15 },
+    readout: { x: 214, y: 36, w: 186, h: 84 },
+    cabin: 30,
+  },
+}
 
-const at = (t) => ({
-  x: (1 - t) ** 2 * P0.x + 2 * (1 - t) * t * P1.x + t ** 2 * P2.x,
-  y: (1 - t) ** 2 * P0.y + 2 * (1 - t) * t * P1.y + t ** 2 * P2.y,
+const curve = (L) => (t) => ({
+  x: (1 - t) ** 2 * L.p0.x + 2 * (1 - t) * t * L.p1.x + t ** 2 * L.home.x,
+  y: (1 - t) ** 2 * L.p0.y + 2 * (1 - t) * t * L.p1.y + t ** 2 * L.home.y,
 })
 
-// Where the route first enters the fence — found once, by walking the curve.
-const CROSS = (() => {
+// Where the route first enters the fence — found once per layout, by walking it.
+const crossing = (L) => {
+  const at = curve(L)
   for (let i = 0; i <= 200; i++) {
     const t = i / 200
     const p = at(t)
-    if (Math.hypot(p.x - HOME.x, p.y - HOME.y) <= FENCE_R) return t
+    if (Math.hypot(p.x - L.home.x, p.y - L.home.y) <= L.r) return t
   }
   return 0.6
-})()
+}
 
 const AMBIENT = 14
 const TARGET = 90
@@ -42,6 +70,23 @@ export function GeofenceDiagram() {
   const reduced = useReducedMotion()
   const progress = useMotionValue(reduced ? 0.86 : 0)
   const [t, setT] = useState(reduced ? 0.86 : 0)
+  const [portrait, setPortrait] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const sync = () => setPortrait(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  const L = portrait ? LAYOUTS.portrait : LAYOUTS.landscape
+  const at = curve(L)
+  const CROSS = crossing(L)
+  const HOME = L.home
+  const FENCE_R = L.r
+  const P0 = L.p0
+  const P1 = L.p1
 
   useMotionValueEvent(progress, 'change', setT)
 
@@ -72,7 +117,7 @@ export function GeofenceDiagram() {
         </span>
       </figcaption>
 
-      <svg viewBox="0 0 900 460" className="block w-full" role="img"
+      <svg viewBox={L.vb} className="block w-full" role="img"
         aria-label={`A map showing a route home crossing a geofence boundary, after which the sauna heats to ${TARGET} degrees`}>
         <defs>
           <radialGradient id="fenceGlow" cx="50%" cy="50%" r="50%">
@@ -83,11 +128,11 @@ export function GeofenceDiagram() {
 
         {/* Faint survey grid */}
         <g stroke="var(--color-ash)" strokeWidth="1">
-          {Array.from({ length: 9 }, (_, i) => (
-            <line key={`h${i}`} x1="0" y1={i * 52 + 26} x2="900" y2={i * 52 + 26} />
+          {Array.from({ length: L.grid.rows }, (_, i) => (
+            <line key={`h${i}`} x1="0" y1={i * L.grid.gapY + 26} x2="100%" y2={i * L.grid.gapY + 26} />
           ))}
-          {Array.from({ length: 17 }, (_, i) => (
-            <line key={`v${i}`} x1={i * 53 + 26} y1="0" x2={i * 53 + 26} y2="460" />
+          {Array.from({ length: L.grid.cols }, (_, i) => (
+            <line key={`v${i}`} x1={i * L.grid.gap + 26} y1="0" x2={i * L.grid.gap + 26} y2="100%" />
           ))}
         </g>
 
@@ -104,10 +149,11 @@ export function GeofenceDiagram() {
           style={{ transition: 'stroke 600ms ease' }}
         />
         <text
-          x={HOME.x - FENCE_R + 10}
-          y={HOME.y - FENCE_R + 4}
+          x={portrait ? HOME.x : HOME.x - FENCE_R + 10}
+          y={HOME.y - FENCE_R - (portrait ? 14 : -4)}
+          textAnchor={portrait ? 'middle' : 'start'}
           fill="var(--color-stone)"
-          fontSize="12"
+          fontSize={L.font.label}
           fontFamily="var(--font-mono)"
           letterSpacing="1.4"
         >
@@ -116,7 +162,7 @@ export function GeofenceDiagram() {
 
         {/* Route */}
         <path
-          d={`M${P0.x} ${P0.y} Q${P1.x} ${P1.y} ${P2.x} ${P2.y}`}
+          d={`M${P0.x} ${P0.y} Q${P1.x} ${P1.y} ${HOME.x} ${HOME.y}`}
           fill="none"
           stroke="var(--color-slate)"
           strokeWidth="1.6"
@@ -125,21 +171,21 @@ export function GeofenceDiagram() {
 
         {/* Start */}
         <circle cx={P0.x} cy={P0.y} r="4.5" fill="var(--color-stone)" />
-        <text x={P0.x + 14} y={P0.y + 5} fill="var(--color-stone)" fontSize="12.5"
+        <text x={P0.x + 14} y={P0.y + 5} fill="var(--color-stone)" fontSize={L.font.label}
           fontFamily="var(--font-mono)" letterSpacing="1.2">
           WORK, 17:40
         </text>
 
         {/* The cabin at home */}
         <g transform={`translate(${HOME.x} ${HOME.y})`}>
-          <rect x="-26" y="-22" width="52" height="44" rx="2"
+          <rect x={-L.cabin} y={-L.cabin * 0.85} width={L.cabin * 2} height={L.cabin * 1.7} rx="2"
             fill="var(--color-bark)" stroke="var(--color-slate)" strokeWidth="1.4" />
-          <rect x="-26" y="-22" width="52" height="44" rx="2"
+          <rect x={-L.cabin} y={-L.cabin * 0.85} width={L.cabin * 2} height={L.cabin * 1.7} rx="2"
             fill="var(--color-ember)" style={{ opacity: heat * 0.55, transition: 'opacity 400ms linear' }} />
-          <path d="M-30 -22 L0 -40 L30 -22" fill="none"
-            stroke="var(--color-slate)" strokeWidth="1.4" strokeLinejoin="round" />
-          <text x="0" y="42" textAnchor="middle" fill="var(--color-stone)"
-            fontSize="12" fontFamily="var(--font-mono)" letterSpacing="1.4">
+          <path d={`M${-L.cabin - 4} ${-L.cabin * 0.85} L0 ${-L.cabin * 1.55} L${L.cabin + 4} ${-L.cabin * 0.85}`}
+            fill="none" stroke="var(--color-slate)" strokeWidth="1.4" strokeLinejoin="round" />
+          <text x="0" y={L.cabin * 1.7 + 14} textAnchor="middle" fill="var(--color-stone)"
+            fontSize={L.font.label} fontFamily="var(--font-mono)" letterSpacing="1.4">
             HOME
           </text>
         </g>
@@ -158,7 +204,7 @@ export function GeofenceDiagram() {
                 stroke={armed ? 'var(--color-ember)' : 'var(--color-slate)'} strokeWidth="1"
                 style={{ transition: 'stroke 600ms ease' }} />
               <text x={c.x} y={c.y + 42} textAnchor="middle" fill={armed ? 'var(--color-glow)' : 'var(--color-stone)'}
-                fontSize="12" fontFamily="var(--font-mono)" letterSpacing="1.2"
+                fontSize={L.font.label} fontFamily="var(--font-mono)" letterSpacing="1.2"
                 style={{ transition: 'fill 600ms ease' }}>
                 TRIGGER
               </text>
@@ -168,25 +214,25 @@ export function GeofenceDiagram() {
 
         {/* You */}
         <g transform={`translate(${pos.x} ${pos.y})`}>
-          <circle r="13" fill="var(--color-ember)" opacity="0.18" />
-          <circle r="5.5" fill="var(--color-glow)" />
+          <circle r={portrait ? 16 : 13} fill="var(--color-ember)" opacity="0.18" />
+          <circle r={portrait ? 7 : 5.5} fill="var(--color-glow)" />
         </g>
 
         {/* Readout */}
-        <g transform="translate(700 40)">
-          <rect width="168" height="74" rx="2" fill="var(--color-ink)"
+        <g transform={`translate(${L.readout.x} ${L.readout.y})`}>
+          <rect width={L.readout.w} height={L.readout.h} rx="2" fill="var(--color-ink)"
             stroke="var(--color-ash)" strokeWidth="1" />
-          <text x="14" y="24" fill="var(--color-stone)" fontSize="11"
+          <text x="14" y={L.font.small + 13} fill="var(--color-stone)" fontSize={L.font.small}
             fontFamily="var(--font-mono)" letterSpacing="1.6">
             CABIN
           </text>
-          <text x="14" y="58" fill={armed ? 'var(--color-glow)' : 'var(--color-sand)'}
-            fontSize="30" fontFamily="var(--font-display)"
+          <text x="14" y={L.readout.h - 16} fill={armed ? 'var(--color-glow)' : 'var(--color-sand)'}
+            fontSize={L.font.big} fontFamily="var(--font-display)"
             style={{ transition: 'fill 600ms ease' }}>
             {temp}°C
           </text>
-          <text x="154" y="58" textAnchor="end" fill="var(--color-stone)" fontSize="11"
-            fontFamily="var(--font-mono)" letterSpacing="1.2">
+          <text x={L.readout.w - 14} y={L.readout.h - 16} textAnchor="end" fill="var(--color-stone)"
+            fontSize={L.font.small} fontFamily="var(--font-mono)" letterSpacing="1.2">
             {armed ? `${Math.round(heat * 100)}%` : 'IDLE'}
           </text>
         </g>
