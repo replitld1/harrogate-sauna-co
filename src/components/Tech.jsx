@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { animate, useMotionValue, useMotionValueEvent, useReducedMotion } from 'framer-motion'
-import { tech } from '../data/site'
+import { film, tech } from '../data/site'
+import Cinematic from './ui/Cinematic'
 import Eyebrow from './ui/Eyebrow'
 import Reveal from './ui/Reveal'
 
@@ -245,9 +246,18 @@ export default function Tech() {
   return (
     <section
       id="technology"
-      className="relative scroll-mt-20 border-t border-ash bg-ink py-28 lg:py-40"
+      className="relative scroll-mt-20 overflow-hidden border-t border-ash bg-ink py-28 lg:py-40"
     >
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+      <Cinematic
+        src={film.heater.src}
+        poster={film.heater.poster}
+        scrim={film.heater.scrim}
+        opacity={film.heater.opacity}
+        pan={film.heater.pan}
+        duration={film.heater.duration}
+      />
+
+      <div className="relative mx-auto max-w-[1400px] px-6 lg:px-12">
         <Reveal className="max-w-2xl">
           <Eyebrow>{tech.eyebrow}</Eyebrow>
           <h2 className="mt-10 text-[clamp(2.1rem,4.2vw,3.4rem)] leading-[1.02]">

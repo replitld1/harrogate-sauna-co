@@ -43,6 +43,10 @@ export const film = {
   loyly: { src: asset('videos/loyly-stones.mp4'), poster: asset('frames/loyly-poster.webp'), scrim: 'base', opacity: 0.74, pan: 'pan-up', duration: 34 },
   interior: { src: asset('videos/cabin-interior.mp4'), poster: asset('frames/huum-room.webp'), scrim: 'base', opacity: 0.78, still: true, pan: 'pan-left', duration: 40 },
   workshop: { src: asset('videos/workshop-cedar.mp4'), poster: asset('frames/craft-poster.webp'), scrim: 'full', opacity: 0.34, pan: 'pan-out', duration: 46 },
+  // Generated for this page: the HUUM waking up. The one moment on the site
+  // that cannot be photographed — ember coming up through the stones as the
+  // geofence trips, LED strip warming the cedar behind.
+  heater: { src: asset('videos/heater-wake.mp4'), poster: asset('frames/heater-poster.webp'), scrim: 'full', opacity: 0.5, pan: 'pan-in', duration: 40 },
   night: { src: asset('videos/night-orbit.mp4'), poster: asset('frames/night-poster.webp'), scrim: 'full', opacity: 0.4, pan: 'pan-left', duration: 42 },
 }
 
