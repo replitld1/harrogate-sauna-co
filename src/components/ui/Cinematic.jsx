@@ -40,14 +40,18 @@ const PANS = {
   'pan-out': { from: 'scale(1.16) translate3d(1%,1%,0)', to: 'scale(1.03)' },
 }
 
-const wantsVideo = () => {
-  if (typeof window === 'undefined') return false
-  const c = navigator.connection
-  if (c?.saveData) return false
-  if (c?.effectiveType && /(^|-)2g$/.test(c.effectiveType)) return false
-  // Hover + fine pointer is the honest test for "this is a desktop browser",
-  // and it is the one surface where autoplay is reliable enough to build on.
-  return window.matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine)').matches
+// Phones get a 640-wide, silent, faststart cut — 44–149KB against 0.8–2MB.
+// At that size the first frame arrives before the panel has finished
+// scrolling into view, which is the whole reason the big files never started.
+const smallSrc = (src) => (src ? src.replace(/\.mp4$/, '-sm.mp4') : src)
+
+const isPhone = () =>
+  typeof window !== 'undefined' &&
+  !window.matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine)').matches
+
+const dataSaver = () => {
+  const c = typeof navigator !== 'undefined' ? navigator.connection : null
+  return !!c?.saveData || /(^|-)2g$/.test(c?.effectiveType || '')
 }
 
 export default function Cinematic({
@@ -67,12 +71,20 @@ export default function Cinematic({
   const reduced = useReducedMotion()
 
   const [near, setNear] = useState(eager)
-  const [useVideo, setUseVideo] = useState(false)
+  // Resolved synchronously on the very first render. Deciding this in an
+  // effect meant the eager hero had already committed the full-size source
+  // before the flag flipped, so phones fetched the desktop files anyway.
+  const [phone, setPhone] = useState(isPhone)
   const [playing, setPlaying] = useState(false)
+  const [needsTap, setNeedsTap] = useState(false)
 
   useEffect(() => {
-    setUseVideo(wantsVideo() && !still)
-  }, [still])
+    const set = () => setPhone(isPhone())
+    set()
+    const mq = window.matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine)')
+    mq.addEventListener('change', set)
+    return () => mq.removeEventListener('change', set)
+  }, [])
 
   /* Nearness is decided two ways on purpose. IntersectionObserver is the
      efficient path but delivers nothing while the document is hidden, and a
@@ -141,12 +153,20 @@ export default function Cinematic({
     }
   }, [src, isInlined])
 
-  const resolved = isInlined ? objectUrl : src
-  const mountVideo = useVideo && near && !reduced && !!resolved
+  const base = isInlined ? objectUrl : src
+  const resolved = base && phone ? smallSrc(base) : base
+
+  /* The video mounts on EVERY device once the panel is near. It is no longer
+     gated on pointer type or on prefers-reduced-motion — gating the element
+     itself was the bug: any single false condition produced a frozen poster
+     with no way for the visitor to recover. Reduced motion now means "do not
+     start it by itself", not "never build it". */
+  const mountVideo = near && !still && !!resolved && !dataSaver()
 
   useEffect(() => {
     const v = ref.current
     if (!v || !mountVideo) return
+
     // Safari reads the muted *attribute*, not the property React sets.
     v.muted = true
     v.defaultMuted = true
@@ -155,19 +175,30 @@ export default function Cinematic({
 
     let cancelled = false
     const attempt = () => {
-      if (cancelled) return
+      if (cancelled || reduced) return
       const pr = v.play()
       if (pr?.then) pr.then(() => !cancelled && setPlaying(true)).catch(() => {})
+      else if (!v.paused) setPlaying(true)
     }
     attempt()
     v.addEventListener('loadeddata', attempt)
     v.addEventListener('canplay', attempt)
+    v.addEventListener('playing', () => !cancelled && setPlaying(true))
+
+    // Whatever the reason — Low Power Mode, an autoplay policy, Reduce Motion
+    // — if it has not started shortly after mounting, offer the tap. The
+    // visitor always has a way to see the film.
+    const t = setTimeout(() => {
+      if (!cancelled && v.paused) setNeedsTap(true)
+    }, 1800)
+
     return () => {
       cancelled = true
+      clearTimeout(t)
       v.removeEventListener('loadeddata', attempt)
       v.removeEventListener('canplay', attempt)
     }
-  }, [mountVideo])
+  }, [mountVideo, reduced])
 
   const move = PANS[pan] ?? PANS['pan-in']
   const panVars = {
@@ -215,6 +246,29 @@ export default function Cinematic({
       )}
 
       <div className={`absolute inset-0 ${scrims[scrim]}`} />
+
+      {needsTap && !playing && (
+        <button
+          type="button"
+          aria-label="Play the film"
+          onClick={() => {
+            const v = ref.current
+            if (!v) return
+            v.muted = true
+            v.play().then(() => {
+              setPlaying(true)
+              setNeedsTap(false)
+            }).catch(() => {})
+          }}
+          className="pointer-events-auto absolute bottom-5 right-5 z-10 flex min-h-[44px] items-center gap-2.5 rounded-full border border-bone/25 bg-ink/75 px-5 text-[13px] text-bone backdrop-blur-md"
+        >
+          <span
+            aria-hidden="true"
+            className="ml-0.5 block h-0 w-0 border-y-[6px] border-l-[10px] border-y-transparent border-l-bone"
+          />
+          Play
+        </button>
+      )}
     </div>
   )
 }
