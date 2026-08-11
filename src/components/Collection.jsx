@@ -119,14 +119,24 @@ export default function Collection() {
                 {/* The plate answers "what is it"; the plan answers "how big".
                     Both, in that order — nobody commits £29,000 to a wireframe. */}
                 <div className="relative -mx-8 -mt-8 mb-8 aspect-[4/3] overflow-hidden lg:-mx-10 lg:-mt-10">
+                  {/* The plates breathe too. A phone has no hover, so a
+                      hover-only scale left three of the biggest images on the
+                      page completely inert — each one now drifts on its own
+                      offset so they never move in lockstep. */}
                   <img
                     src={m.image}
                     alt={m.alt}
                     loading="lazy"
                     decoding="async"
-                    width="1280"
-                    height="720"
-                    className="h-full w-full object-cover transition-transform duration-[1.6s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                    width="1600"
+                    height="1194"
+                    className="h-full w-full object-cover will-change-transform motion-reduce:animate-none"
+                    style={{
+                      animation: `cinepan ${46 + i * 5}s cubic-bezier(0.37,0,0.63,1) infinite alternate`,
+                      animationDelay: `${i * -6}s`,
+                      ['--pan-from']: 'scale(1.03)',
+                      ['--pan-to']: 'scale(1.11) translate3d(-1%,-1%,0)',
+                    }}
                   />
                   <div
                     aria-hidden="true"
