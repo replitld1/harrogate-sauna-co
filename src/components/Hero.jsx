@@ -30,6 +30,8 @@ export default function Hero() {
         poster={film.hero.poster}
         scrim={film.hero.scrim}
         opacity={film.hero.opacity}
+        pan={film.hero.pan}
+        duration={film.hero.duration}
         eager
       />
 

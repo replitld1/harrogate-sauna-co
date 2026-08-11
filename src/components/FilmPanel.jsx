@@ -15,6 +15,8 @@ export default function FilmPanel({ id, film, eyebrow, title, emphasis, body, fa
     >
       <Cinematic src={film.src}
         poster={film.poster}
+        pan={film.pan}
+        duration={film.duration}
         still={film.still} scrim={film.scrim ?? 'base'} opacity={film.opacity ?? 0.68} />
 
       <div className="relative mx-auto w-full max-w-[1400px] px-6 lg:px-12">

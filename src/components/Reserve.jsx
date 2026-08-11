@@ -84,6 +84,8 @@ export default function Reserve() {
         poster={film.night.poster}
         scrim={film.night.scrim}
         opacity={film.night.opacity}
+        pan={film.night.pan}
+        duration={film.night.duration}
       />
 
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-12">

@@ -15,39 +15,50 @@ const scrims = {
 }
 
 /**
- * A full-bleed looping shot behind a section.
+ * A full-bleed shot behind a section.
  *
- * The footage already moves slowly; the drift adds a second, slower scale on
- * top of it so a five-second loop never reads as a five-second loop. Both stop
- * dead under prefers-reduced-motion — the video pauses on its first frame.
+ * MOBILE IS STILLS, ON PURPOSE.
+ *
+ * Video autoplay on a phone depends on a stack of things we do not control —
+ * Low Power Mode, the Reduce Motion accessibility setting, the browser's
+ * autoplay policy, whether the file was muxed with faststart — and every one
+ * of them fails the same silent way: a frozen frame that looks broken. The
+ * previous build gated the video element behind four conditions at once, so
+ * any single one of them yielded a dead poster with no way to recover.
+ *
+ * A slow pan on an image has none of those dependencies. It cannot fail to
+ * start, it costs ~20KB instead of ~1.5MB, and at arm's length on a phone it
+ * reads as the same thing. Desktop still gets the film, because there it
+ * demonstrably plays.
  */
-/**
- * Should this visitor get 1.5MB of video?
- *
- * Phones play the film too — the footage is the point of the page. What we do
- * not do is what this used to: fetch all five clips (7.5MB) eagerly on load.
- * Each one now mounts only as it comes near the viewport, behind its poster,
- * so a phone pays for the clip it is actually looking at.
- *
- * The two opt-outs are the visitor's own: Data Saver, and a 2G connection.
- */
+
+// Each panel pans its own way, so five sections never share one move.
+const PANS = {
+  'pan-in': { from: 'scale(1.02)', to: 'scale(1.14) translate3d(-1.5%,-1.5%,0)' },
+  'pan-left': { from: 'scale(1.10) translate3d(2.5%,0,0)', to: 'scale(1.10) translate3d(-2.5%,-1%,0)' },
+  'pan-up': { from: 'scale(1.08) translate3d(0,2.5%,0)', to: 'scale(1.14) translate3d(0,-2%,0)' },
+  'pan-out': { from: 'scale(1.16) translate3d(1%,1%,0)', to: 'scale(1.03)' },
+}
+
 const wantsVideo = () => {
   if (typeof window === 'undefined') return false
   const c = navigator.connection
   if (c?.saveData) return false
   if (c?.effectiveType && /(^|-)2g$/.test(c.effectiveType)) return false
-  return true
+  // Hover + fine pointer is the honest test for "this is a desktop browser",
+  // and it is the one surface where autoplay is reliable enough to build on.
+  return window.matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine)').matches
 }
 
 export default function Cinematic({
   src,
   poster,
   scrim = 'base',
-  drift = true,
+  pan = 'pan-in',
+  duration = 38,
   opacity = 0.68,
   eager = false,
-  // Some panels are carried by a real photograph. Playing a generated clip
-  // over one of those would be a downgrade, so they opt out of video.
+  // Panels carried by a real photograph never play a generated clip over it.
   still = false,
   className = '',
 }) {
@@ -55,22 +66,19 @@ export default function Cinematic({
   const holderRef = useRef(null)
   const reduced = useReducedMotion()
 
-  // Mount the source only when the panel is close to view (the hero is `eager`,
-  // because it is the view).
   const [near, setNear] = useState(eager)
-  const [allowVideo, setAllowVideo] = useState(false)
+  const [useVideo, setUseVideo] = useState(false)
+  const [playing, setPlaying] = useState(false)
 
   useEffect(() => {
-    setAllowVideo(wantsVideo())
-  }, [])
+    setUseVideo(wantsVideo() && !still)
+  }, [still])
 
-  /* Nearness is decided two ways on purpose.
-   *
-   * IntersectionObserver is the efficient path, but it delivers nothing while
-   * the document is hidden, and a panel that never gets its callback never
-   * mounts its video at all — the failure mode is a page of stills. So a
-   * cheap rAF-throttled scroll check runs alongside it and reaches the same
-   * conclusion independently. Whichever wins first, the video mounts. */
+  /* Nearness is decided two ways on purpose. IntersectionObserver is the
+     efficient path but delivers nothing while the document is hidden, and a
+     panel that never gets its callback never loads at all. The scroll check
+     reaches the same conclusion independently; whichever wins first, we load.
+     Not rAF-throttled — rAF is suspended in the same conditions this covers. */
   useEffect(() => {
     if (near) return
     const el = holderRef.current
@@ -82,15 +90,10 @@ export default function Cinematic({
       done = true
       setNear(true)
     }
-
     const check = () => {
       const r = el.getBoundingClientRect()
-      if (r.top < window.innerHeight + 300 && r.bottom > -300) promote()
+      if (r.top < window.innerHeight + 400 && r.bottom > -400) promote()
     }
-
-    // Deliberately not rAF-throttled: rAF is suspended whenever the document
-    // is hidden, which is exactly one of the cases this fallback exists to
-    // cover. A getBoundingClientRect behind a 100ms time guard is cheap enough.
     let last = 0
     const onScroll = () => {
       const now = performance.now()
@@ -100,15 +103,13 @@ export default function Cinematic({
     }
 
     const obs = new IntersectionObserver(([e]) => e.isIntersecting && promote(), {
-      rootMargin: '300px 0px',
+      rootMargin: '400px 0px',
     })
     obs.observe(el)
-
     check()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
     document.addEventListener('visibilitychange', check)
-
     return () => {
       obs.disconnect()
       window.removeEventListener('scroll', onScroll)
@@ -118,11 +119,9 @@ export default function Cinematic({
   }, [near])
 
   // iOS Safari will not play a `data:` URI in a <video> — it needs a source it
-  // can issue range requests against. A blob: URL satisfies that, so the
-  // single-file build (where clips are inlined) converts before playing.
-  // Ordinary http(s) sources pass straight through untouched.
+  // can issue range requests against, so the inlined build converts to blob:.
   const [objectUrl, setObjectUrl] = useState(null)
-  const isInlined = src.startsWith('data:')
+  const isInlined = src?.startsWith('data:')
 
   useEffect(() => {
     if (!isInlined) return
@@ -143,24 +142,12 @@ export default function Cinematic({
   }, [src, isInlined])
 
   const resolved = isInlined ? objectUrl : src
-  const playVideo = allowVideo && near && !reduced && !still
-  const [blocked, setBlocked] = useState(false)
+  const mountVideo = useVideo && near && !reduced && !!resolved
 
-  /* Getting autoplay to actually happen on a phone.
-   *
-   * Three things bite here, and all three had to be fixed:
-   *  1. React sets `muted` as a DOM *property*, and Safari reads the
-   *     *attribute* when deciding whether a video may autoplay. Without the
-   *     attribute iOS refuses every time and you are left staring at a poster.
-   *  2. play() can reject before the first frame is ready, so it is retried on
-   *     canplay/loadeddata rather than fired once and forgotten.
-   *  3. Low Power Mode blocks autoplay outright, whatever we do. That is not
-   *     recoverable, so we surface a tap-to-play control instead of failing
-   *     silently. */
   useEffect(() => {
     const v = ref.current
-    if (!v || !resolved || !playVideo) return
-
+    if (!v || !mountVideo) return
+    // Safari reads the muted *attribute*, not the property React sets.
     v.muted = true
     v.defaultMuted = true
     v.setAttribute('muted', '')
@@ -169,10 +156,9 @@ export default function Cinematic({
     let cancelled = false
     const attempt = () => {
       if (cancelled) return
-      const p = v.play()
-      if (p?.then) p.then(() => !cancelled && setBlocked(false)).catch(() => !cancelled && setBlocked(true))
+      const pr = v.play()
+      if (pr?.then) pr.then(() => !cancelled && setPlaying(true)).catch(() => {})
     }
-
     attempt()
     v.addEventListener('loadeddata', attempt)
     v.addEventListener('canplay', attempt)
@@ -181,48 +167,45 @@ export default function Cinematic({
       v.removeEventListener('loadeddata', attempt)
       v.removeEventListener('canplay', attempt)
     }
-  }, [playVideo, resolved])
+  }, [mountVideo])
+
+  const move = PANS[pan] ?? PANS['pan-in']
+  const panVars = {
+    animation: `cinepan ${duration}s cubic-bezier(0.37,0,0.63,1) infinite alternate`,
+    ['--pan-from']: move.from,
+    ['--pan-to']: move.to,
+  }
 
   return (
     <div
       ref={holderRef}
+      aria-hidden="true"
       className={`pointer-events-none absolute inset-0 overflow-hidden bg-ink ${className}`}
     >
-      {/* The still is always present. It is the whole picture on a phone, the
-          first paint on desktop, and the fallback when autoplay is refused. */}
+      {/* The still always renders and always pans. If video never starts —
+          Low Power Mode, autoplay refused, a phone — this is what you see,
+          and it looks finished rather than frozen. */}
       {poster && (
         <img
           src={poster}
           alt=""
-          aria-hidden="true"
           fetchPriority={eager ? 'high' : 'low'}
           loading={eager ? 'eager' : 'lazy'}
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{
-            opacity,
-            animation:
-              drift && !reduced && !playVideo
-                ? 'kenburns 34s ease-in-out infinite alternate'
-                : undefined,
-          }}
+          className="absolute inset-0 h-full w-full object-cover will-change-transform"
+          style={reduced ? { opacity } : { opacity, ...panVars }}
         />
       )}
 
-      {playVideo && (
+      {mountVideo && (
         <video
           ref={ref}
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{
-            opacity,
-            animation: drift && !reduced ? 'kenburns 34s ease-in-out infinite alternate' : undefined,
-          }}
+          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms]"
+          style={{ opacity: playing ? opacity : 0, ...(reduced ? {} : panVars) }}
           src={resolved ?? undefined}
           poster={poster}
           autoPlay
           muted
-          defaultMuted
           loop
           playsInline
           disableRemotePlayback
@@ -232,27 +215,6 @@ export default function Cinematic({
       )}
 
       <div className={`absolute inset-0 ${scrims[scrim]}`} />
-
-      {/* Low Power Mode refuses autoplay no matter what. Rather than leave a
-          still that looks broken, offer the tap. */}
-      {blocked && (
-        <button
-          type="button"
-          onClick={() => {
-            const v = ref.current
-            if (!v) return
-            v.muted = true
-            v.play().then(() => setBlocked(false)).catch(() => {})
-          }}
-          className="pointer-events-auto absolute bottom-5 right-5 z-10 flex min-h-[44px] items-center gap-2.5 rounded-full border border-bone/25 bg-ink/70 px-5 text-[13px] text-bone backdrop-blur-md"
-        >
-          <span
-            aria-hidden="true"
-            className="block h-0 w-0 border-y-[6px] border-l-[9px] border-y-transparent border-l-bone"
-          />
-          Play
-        </button>
-      )}
     </div>
   )
 }

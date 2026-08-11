@@ -12,6 +12,8 @@ export default function Craft() {
       <Cinematic
         src={film.workshop.src}
         poster={film.workshop.poster}
+        pan={film.workshop.pan}
+        duration={film.workshop.duration}
         scrim={film.workshop.scrim}
         opacity={film.workshop.opacity}
       />

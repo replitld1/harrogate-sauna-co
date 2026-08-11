@@ -146,6 +146,18 @@
   }
 }
 
+/* The pan. Each panel sets --pan-from/--pan-to, so one keyframe drives four
+   different moves. This is the primary treatment on a phone, where video
+   autoplay cannot be relied on, so it has to carry the page on its own. */
+@keyframes cinepan {
+  from {
+    transform: var(--pan-from, scale(1.02));
+  }
+  to {
+    transform: var(--pan-to, scale(1.12));
+  }
+}
+
 /* A second, slower move on top of the footage so a 5s loop stops reading as one */
 @keyframes kenburns {
   from {

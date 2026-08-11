@@ -39,11 +39,11 @@ const asset = (path) => `${import.meta.env.BASE_URL}${path}`.replace(/([^:])\/{2
 
 // Looping shots. Each is a slow move — the page adds a second, slower drift on top.
 export const film = {
-  hero: { src: asset('videos/hero-dusk.mp4'), poster: asset('frames/hero-poster.webp'), scrim: 'left', opacity: 0.72 },
-  loyly: { src: asset('videos/loyly-stones.mp4'), poster: asset('frames/loyly-poster.webp'), scrim: 'base', opacity: 0.74 },
-  interior: { src: asset('videos/cabin-interior.mp4'), poster: asset('frames/huum-room.webp'), scrim: 'base', opacity: 0.78, still: true },
-  workshop: { src: asset('videos/workshop-cedar.mp4'), poster: asset('frames/craft-poster.webp'), scrim: 'full', opacity: 0.34 },
-  night: { src: asset('videos/night-orbit.mp4'), poster: asset('frames/night-poster.webp'), scrim: 'full', opacity: 0.4 },
+  hero: { src: asset('videos/hero-dusk.mp4'), poster: asset('frames/hero-poster.webp'), scrim: 'left', opacity: 0.72, pan: 'pan-in', duration: 44 },
+  loyly: { src: asset('videos/loyly-stones.mp4'), poster: asset('frames/loyly-poster.webp'), scrim: 'base', opacity: 0.74, pan: 'pan-up', duration: 34 },
+  interior: { src: asset('videos/cabin-interior.mp4'), poster: asset('frames/huum-room.webp'), scrim: 'base', opacity: 0.78, still: true, pan: 'pan-left', duration: 40 },
+  workshop: { src: asset('videos/workshop-cedar.mp4'), poster: asset('frames/craft-poster.webp'), scrim: 'full', opacity: 0.34, pan: 'pan-out', duration: 46 },
+  night: { src: asset('videos/night-orbit.mp4'), poster: asset('frames/night-poster.webp'), scrim: 'full', opacity: 0.4, pan: 'pan-left', duration: 42 },
 }
 
 export const panels = {
