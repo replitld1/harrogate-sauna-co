@@ -90,7 +90,7 @@ export const heroStats = [
 ]
 
 export const marqueeItems = [
-  'Western red cedar, New Zealand grown',
+  'Western red cedar, coastal British Columbia',
   'Kiln dried to 12% moisture',
   'Joiners with 30–40 years on the tools',
   'Iki Pillar 9kW',
@@ -108,8 +108,8 @@ export const hotspots = [
     short: 'Cladding',
     x: 105,
     y: 152,
-    title: 'New Zealand western red cedar',
-    body: 'Vertical boards of clear-grade western red cedar, grown in New Zealand plantations where the longer season gives a tighter, more even grain than the Canadian stock most builders use. Rain-screened on battens with a ventilated cavity behind.',
+    title: 'British Columbian western red cedar',
+    body: 'Vertical boards of clear-grade western red cedar off the British Columbian coast — the tree\u2019s native range, and the grade the timber trade measures every other cedar against. Slow-grown, tight-ringed and knot-free. Rain-screened on battens with a ventilated cavity behind.',
     spec: '19mm · knot-free',
   },
   {
@@ -324,7 +324,7 @@ export const process = [
   {
     n: '03',
     title: 'Selecting the timber',
-    body: 'Your cabin is cut from one parcel of New Zealand western red cedar, kiln dried to 12% so it is stable before it is ever cut. You are welcome to come to Crag Lane and choose it.',
+    body: 'Your cabin is cut from one parcel of coastal British Columbian western red cedar, kiln dried to 12% so it is stable before it is ever cut. You are welcome to come to Crag Lane and choose it.',
     meta: 'Weeks 2–3',
   },
   {
@@ -344,7 +344,7 @@ export const process = [
 export const specification = [
   { group: 'Structure', rows: [
     ['Frame', 'Kiln-dried Scandinavian redwood, 95 × 45mm'],
-    ['Cladding', 'Western red cedar, New Zealand grown, clear grade, 19mm'],
+    ['Cladding', 'Western red cedar, coastal British Columbia, clear grade, 19mm'],
     ['Moisture content', 'Kiln dried to 12% before machining'],
     ['Insulation', '100mm rock wool, foil vapour barrier'],
     ['Roof', 'Standing-seam zinc, 0.7mm, 60mm overhang'],
@@ -469,8 +469,8 @@ export const faqs = [
     a: `Sixteen weeks from deposit to first fire. We build ten cabins a year and ${numberWord(year.sold)} of the ${year.current} slots have gone, so ${numberWord(year.remaining)} remain. Order in the spring for the same year; from about August the deposit rolls into the following year's list. Bespoke sizing adds four to six weeks of drawing before the build slot even opens, so those need to start earlier.`,
   },
   {
-    q: 'Why New Zealand cedar and not Canadian?',
-    a: 'Western red cedar grown in New Zealand plantations puts on wood in a longer, steadier season than the wild Canadian stock most garden buildings use. The grain is tighter and more even, there are far fewer knots to work round, and it is grown to be cut rather than logged from old forest. We then kiln dry it to 12% so it is stable before a single board is machined — which is why we are comfortable putting twenty years on it.',
+    q: 'Where does the cedar come from?',
+    a: 'Coastal British Columbia. That is western red cedar\u2019s native range, and BC coastal stock is the benchmark the rest of the trade is graded against — slow-grown, tight-ringed, clear of knots, and naturally durable without any treatment because of the oils the tree makes for itself. We buy clear grade and then kiln dry it to 12% ourselves, so it is stable before a single board is machined. That is why we are comfortable putting twenty years on it.',
   },
   {
     q: 'What do I need to sort before delivery?',
