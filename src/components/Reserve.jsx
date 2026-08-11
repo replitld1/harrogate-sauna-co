@@ -82,6 +82,7 @@ export default function Reserve() {
       <Cinematic
         src={film.night.src}
         poster={film.night.poster}
+        still={film.night.still}
         scrim={film.night.scrim}
         opacity={film.night.opacity}
         pan={film.night.pan}
