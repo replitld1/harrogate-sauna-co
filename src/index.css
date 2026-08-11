@@ -1,0 +1,183 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Type. Newsreader and Archivo over the usual Fraunces/Inter pairing —
+     both of those are on every AI-built site and read as a default, not a choice. */
+  --font-display: 'Newsreader', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Warm dark neutrals */
+  --color-ink: #0a0908;
+  --color-soot: #100e0c;
+  --color-bark: #171310;
+  --color-ash: #241e19;
+  --color-slate: #3a312a;
+  --color-stone: #8c8178;
+  --color-sand: #cfc3b4;
+  --color-bone: #f2ede6;
+
+  /* Fire */
+  --color-cedar: #c97b4a;
+  --color-ember: #e8622c;
+  --color-glow: #ffb27a;
+
+  /* The material itself, sampled off the cabins: fresh-sawn cedar through to
+     the silver it becomes after four winters. The fire ramp above is light;
+     this ramp is timber, and it is what the surfaces are made of. */
+  --color-timber: #c98f5a;
+  --color-timber-deep: #b07d52;
+  --color-weathered: #95867a;
+  --color-silver: #9a958c;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-sand);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-ember);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-glow);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    color: var(--color-bone);
+    letter-spacing: -0.02em;
+    font-optical-sizing: auto;
+  }
+
+  /* A quiet, warm scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-ash);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-slate);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Section eyebrow rule */
+  .rule {
+    background: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-stone) 45%, transparent),
+      transparent
+    );
+  }
+}
+
+@utility grain {
+  position: relative;
+}
+
+/* Fine film grain — keeps the large dark fields from banding */
+@utility grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(-14px, -120px, 0) scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* A second, slower move on top of the footage so a 5s loop stops reading as one */
+@keyframes kenburns {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.13) translate3d(-1.4%, -1%, 0);
+  }
+}
+
+/* The seal's engraved legend, turning slowly */
+@keyframes sealspin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+  38% {
+    opacity: 0.9;
+  }
+  55% {
+    opacity: 0.5;
+  }
+  72% {
+    opacity: 0.82;
+  }
+}
