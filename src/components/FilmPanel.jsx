@@ -11,7 +11,7 @@ export default function FilmPanel({ id, film, eyebrow, title, emphasis, body, fa
   return (
     <section
       id={id}
-      className="relative flex min-h-[92svh] scroll-mt-20 flex-col justify-end overflow-hidden pb-16 lg:pb-24"
+      className="on-media relative flex min-h-[92svh] scroll-mt-20 flex-col justify-end overflow-hidden pb-16 lg:pb-24"
     >
       <Cinematic src={film.src}
         poster={film.poster}

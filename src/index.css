@@ -33,9 +33,56 @@
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ------------------------------------------------------------------ *
+ * Themes
+ *
+ * Tailwind v4 compiles every colour utility to var(--color-x), so swapping
+ * the tokens under a selector re-themes the whole page without touching a
+ * component.
+ *
+ * The light palette is warm paper, not white — this is a cedar company, and
+ * a clinical white ground would fight the material. The fire ramp darkens
+ * rather than inverting, so ember stays ember but clears 4.5:1 on paper.
+ * ------------------------------------------------------------------ */
 @layer base {
   :root {
     color-scheme: dark;
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+
+    --color-ink: #f7f3ed;
+    --color-soot: #efe9e0;
+    --color-bark: #e7dfd3;
+    --color-ash: #ddd3c5;
+    --color-slate: #c3b6a5;
+    --color-stone: #6b6157;
+    --color-sand: #4a4139;
+    --color-bone: #1f1a16;
+
+    --color-cedar: #9a5526;
+    --color-ember: #b04214;
+    --color-glow: #8f4419;
+  }
+
+  /* Sections that sit over photography or film keep the dark treatment in
+     both themes. A white scrim over a dusk photograph with dark text on top
+     is unreadable, and the imagery is lit for a dark ground. Re-declaring
+     the tokens here means every utility inside renders dark automatically —
+     no per-component branching. */
+  .on-media {
+    --color-ink: #0a0908;
+    --color-soot: #100e0c;
+    --color-bark: #171310;
+    --color-ash: #241e19;
+    --color-slate: #3a312a;
+    --color-stone: #8c8178;
+    --color-sand: #cfc3b4;
+    --color-bone: #f2ede6;
+    --color-cedar: #c97b4a;
+    --color-ember: #e8622c;
+    --color-glow: #ffb27a;
   }
 
   html {
@@ -118,7 +165,8 @@
   position: relative;
 }
 
-/* Fine film grain — keeps the large dark fields from banding */
+/* Fine film grain — keeps the large dark fields from banding. Dialled right
+   back on paper, where it would read as dirt rather than as film. */
 @utility grain-overlay {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
 }

@@ -76,7 +76,7 @@ export default function Anatomy() {
           </Reveal>
 
           <Reveal delay={0.12} className="lg:col-span-8">
-            <div className="relative overflow-hidden rounded-sm border border-ash bg-soot">
+            <div className="on-media relative overflow-hidden rounded-sm border border-ash bg-soot">
               {/* Drawing sheet header */}
               <div className="flex items-center justify-between border-b border-ash px-6 py-3 font-mono text-[11.5px] uppercase tracking-[0.2em] text-stone">
                 <span>Stray — section A–A</span>

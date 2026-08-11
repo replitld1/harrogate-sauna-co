@@ -5,6 +5,21 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0A0908" />
+    <script>
+      // Runs before first paint: a stored choice wins, otherwise follow the OS.
+      (function () {
+        try {
+          var t = localStorage.getItem('hsc-theme')
+          if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+          document.documentElement.dataset.theme = t
+          if (t === 'light') {
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f3ed')
+          }
+        } catch (e) {
+          document.documentElement.dataset.theme = 'dark'
+        }
+      })()
+    </script>
     <meta
       name="description"
       content="The Harrogate Sauna Co build ten western red cedar saunas a year, by hand, at Crag Lane in Harrogate. British Columbian cedar kiln dried to 12%, geofenced pre-heat, 20-year cedar warranty. From £24,500."

@@ -7,7 +7,7 @@ export default function Craft() {
   return (
     <section
       id="craft"
-      className="relative scroll-mt-20 overflow-hidden border-t border-ash py-28 lg:py-40"
+      className="on-media relative scroll-mt-20 overflow-hidden border-t border-ash py-28 lg:py-40"
     >
       <Cinematic
         src={film.workshop.src}

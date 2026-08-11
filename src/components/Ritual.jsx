@@ -190,7 +190,7 @@ export default function Ritual() {
                 }}
               >
                 {/* Track */}
-                <circle cx={CX} cy={CY} r="92" fill="none" stroke="#241e19" strokeWidth="1.5" />
+                <circle cx={CX} cy={CY} r="92" fill="none" stroke="var(--color-ash)" strokeWidth="1.5" />
 
                 {/* Graduations. Lit up to the current value. */}
                 {Array.from({ length: 55 }, (_, i) => {
@@ -203,7 +203,7 @@ export default function Ritual() {
                     <line
                       key={i}
                       x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
-                      stroke={on ? '#e8622c' : '#3a312a'}
+                      stroke={on ? 'var(--color-ember)' : 'var(--color-slate)'}
                       strokeWidth={on ? 2 : 1}
                       style={{ transition: 'all 320ms cubic-bezier(0.16,1,0.3,1)' }}
                     />
@@ -222,7 +222,7 @@ export default function Ritual() {
                       textAnchor="middle"
                       fontSize="8"
                       fontFamily="var(--font-mono)"
-                      fill={Math.abs(v - temp) < 3 ? '#ffb27a' : '#8c8178'}
+                      fill={Math.abs(v - temp) < 3 ? 'var(--color-glow)' : 'var(--color-stone)'}
                       style={{ transition: 'fill 400ms ease' }}
                     >
                       {l.temp}
@@ -231,24 +231,24 @@ export default function Ritual() {
                 })}
 
                 {/* Face */}
-                <circle cx={CX} cy={CY} r="56" fill="#0a0908" />
+                <circle cx={CX} cy={CY} r="56" fill="var(--color-ink)" />
                 <g opacity={0.1 + t * 0.22}>
                   <circle
-                    cx={CX} cy={CY} r="56" fill="#e8622c"
+                    cx={CX} cy={CY} r="56" fill="var(--color-ember)"
                     style={{ animation: 'flicker 5s ease-in-out infinite' }}
                   />
                 </g>
-                <circle cx={CX} cy={CY} r="56" fill="none" stroke="#3a312a" strokeWidth="1" />
+                <circle cx={CX} cy={CY} r="56" fill="none" stroke="var(--color-slate)" strokeWidth="1" />
 
                 {/* Knob */}
                 <line
                   x1={pointOn(toAngle(t), 60).x} y1={pointOn(toAngle(t), 60).y}
                   x2={knob.x} y2={knob.y}
-                  stroke="#ffb27a" strokeWidth="2" strokeLinecap="round"
+                  stroke="var(--color-glow)" strokeWidth="2" strokeLinecap="round"
                 />
-                <circle cx={knob.x} cy={knob.y} r={dragging ? 8 : 6.5} fill="#ffb27a"
+                <circle cx={knob.x} cy={knob.y} r={dragging ? 8 : 6.5} fill="var(--color-glow)"
                   style={{ transition: 'r 200ms ease' }} />
-                <circle cx={knob.x} cy={knob.y} r="14" fill="#e8622c" opacity="0.16" />
+                <circle cx={knob.x} cy={knob.y} r="14" fill="var(--color-ember)" opacity="0.16" />
               </svg>
 
               {/* Readout */}

@@ -77,7 +77,7 @@ export default function Reserve() {
   return (
     <section
       id="reserve"
-      className="relative scroll-mt-20 overflow-hidden border-t border-ash py-28 lg:py-40"
+      className="on-media relative scroll-mt-20 overflow-hidden border-t border-ash bg-ink py-28 lg:py-40"
     >
       <Cinematic
         src={film.night.src}

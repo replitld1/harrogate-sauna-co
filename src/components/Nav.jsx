@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { brand, cta, nav } from '../data/site'
 import Button from './ui/Button'
+import ThemeToggle from './ui/ThemeToggle'
 
 function Wordmark({ className = '' }) {
   return (
@@ -134,6 +135,7 @@ export default function Nav() {
             >
               {brand.phone}
             </a>
+            <ThemeToggle className="-mr-1" />
             <div className="hidden sm:block">
               <Button href="#reserve" variant="ghost" className="!px-5 !py-2.5 !text-[13px]">
                 {cta.label}
@@ -170,6 +172,8 @@ export default function Nav() {
           >
             <div className="flex h-[72px] items-center justify-between px-6">
               <Wordmark />
+              <div className="flex items-center gap-1">
+              <ThemeToggle />
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -178,6 +182,7 @@ export default function Nav() {
               >
                 <X size={22} strokeWidth={1.4} />
               </button>
+              </div>
             </div>
             <ul className="mt-6 flex flex-col px-6">
               {nav.map((item, i) => (

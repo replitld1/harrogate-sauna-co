@@ -24,7 +24,7 @@ export default function Hero() {
   const fade = useTransform(scrollYProgress, [0, 0.85], [1, reduced ? 1 : 0])
 
   return (
-    <section ref={ref} id="top" className="relative min-h-[100svh] overflow-hidden">
+    <section ref={ref} id="top" className="on-media relative min-h-[100svh] overflow-hidden bg-ink">
       <Cinematic
         src={film.hero.src}
         poster={film.hero.poster}
